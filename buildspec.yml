@@ -4,10 +4,10 @@ phases:
     commands:
       - echo Logging in to Amazon ECR....
       - aws --version
-      #- $(aws ecr get-login --region ap-south-1 --no-include-email)
+      # Login to ECR
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 010928211649.dkr.ecr.us-east-1.amazonaws.com
-      - # Replace with this to your repository URI
-      - REPOSITORY_URI=YOUR_AWS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/spring-demo-ecr
+      # Set repository URI and image tag
+      - REPOSITORY_URI=010928211649.dkr.ecr.us-east-1.amazonaws.com/spring-boot-ecr-task4
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
@@ -24,8 +24,8 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      # Give your container name
-      - DOCKER_CONTAINER_NAME=spring-demo-ecr
+      # Set container name
+      - DOCKER_CONTAINER_NAME=spring-boot-ecr-task4
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo $DOCKER_CONTAINER_NAME
       - echo printing imagedefinitions.json
